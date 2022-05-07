@@ -5,6 +5,11 @@ import driver.Platforms;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.TouchAction;
+import io.appium.java_client.touch.offset.PointOption;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -29,7 +34,6 @@ public class Lab16_1_FormFilling {
             MobileElement switchBtnElem = driver.findElement(MobileBy.AccessibilityId("switch"));
             switchBtnElem.click();
 
-            //Because the device is large, there is no switch part
             // Find and click dropdown
             MobileElement dropdownElem = driver.findElement(MobileBy
                     .AndroidUIAutomator("new UiSelector().textContains(\"Select an item\")"));
@@ -39,6 +43,31 @@ public class Lab16_1_FormFilling {
             List<MobileElement> dropdownListElem = driver.findElements(MobileBy.id("android:id/text1"));
             final int WEB_DRIVER_IO_IS_AWESOME = 1;
             dropdownListElem.get(WEB_DRIVER_IO_IS_AWESOME).click();
+
+            // Swipe down
+            //Get mobile window size
+            Dimension windowSize = driver.manage().window().getSize();
+            int screenHeight = windowSize.getHeight();
+            int screenWidth = windowSize.getWidth();
+
+            // Calculate Touch points
+            int xStartPoint = 50 * screenWidth/100;
+            int xEndPoint = 50 * screenWidth/100;
+
+            int yStartPoint = 50 * screenHeight/100;
+            int yEndPoint = 10 * screenHeight/100;
+
+            // Convert coordinates -> PointOption
+            PointOption startPoint = new PointOption().withCoordinates(xStartPoint, yStartPoint);
+            PointOption endPoint = new PointOption().withCoordinates(xEndPoint, yEndPoint);
+
+            // Using TouchAction to swipe
+            TouchAction touchAction = new TouchAction(driver);
+            touchAction
+                    .longPress(startPoint)
+                    .moveTo(endPoint)
+                    .release()
+                    .perform();
 
             // Find and click active button
             MobileElement activeBtnElem = driver.findElement(MobileBy.AccessibilityId("button-Active"));
